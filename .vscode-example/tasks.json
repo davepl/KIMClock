@@ -1,0 +1,61 @@
+{
+    // Assuming cl65 and VICE are properly on your PATH, these tasks should allow you to assemble and test for both C64 and PET from
+    // withing Visual Studio Code.
+    //
+    // This is my first ever attempt at a tasks.json file, so if it works, print it out and hang it on the fridge! (Davepl)
+
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build for KIM-1",
+            "type": "shell",
+            "command": "cl65 --verbose  -debug --debug-info --listing kimclock.lst --mapfile kimclock.map  --asm-define C64=1 -o kimclock.prg -t none ${file}",
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        
+        {
+                "label": "Create Tape File",
+                "type": "shell",
+                "command": "srec_cat kimclock.prg -binary -o kimclock.ptp -MOS_Technologies",
+                "args": [],
+                "group": {
+                        "kind": "test",
+                        "isDefault": true
+                },
+                "presentation": {
+                        "clear": true
+                },
+                "problemMatcher": "$msCompile",
+                "dependsOn":[
+                        "Build for KIM-1"
+                ]
+        }
+        ,
+        {
+            "label": "Run on C64",
+            "type": "shell",
+            "command": "x64sc -rsdev3 192.168.8.160:25232 -rsuserdev 2 -rsdev3baud 2400 c64rock.prg ",
+            "args": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": "$msCompile",
+            "dependsOn":[
+                "Build for C64"
+            ]
+        }
+
+    ]
+}
