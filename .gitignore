@@ -1,0 +1,6 @@
+.vscode
+*.prg
+*.lst
+*.map
+*.o
+*.ptp
